@@ -1,4 +1,4 @@
-app-id: org.freecadweb.FreeCAD
+app-id: org.freecadweb.FreeCAD.Link
 base: io.qt.qtwebengine.BaseApp
 base-version: '5.15-22.08'
 runtime: org.kde.Platform
@@ -190,9 +190,9 @@ modules:
     cleanup:
       - /bin
     sources:
-      - type: archive
-        url: https://github.com/coin3d/coin/releases/download/Coin-4.0.0/coin-4.0.0-src.tar.gz
-        sha256: e4f4bd57804b8ed0e017424ad2e45c112912a928b83f86c89963df9015251476
+      - type: git
+        url: https://github.com/realthunder/coin.git
+        tag: 20230324
 
   - name: soqt
     buildsystem: cmake-ninja
@@ -204,8 +204,8 @@ modules:
       - sed -i '/Qt5/d' /app/lib/cmake/SoQt-1.6.0/soqt-config.cmake
     sources:
       - type: archive
-        url: https://github.com/coin3d/soqt/releases/download/SoQt-1.6.0/soqt-1.6.0-src.tar.gz
-        sha256: 9f535af59f07c907022815679681bd345c9dec2f408c74833f6b1b24bca40e1f
+        url: https://github.com/realthunder/soqt/releases/download/SoQt-1.6.0-conda/soqt-1.6.0-src.tar.gz
+        sha256: ee3d2a9a81c0d83d43b39b27ec353ef262ad2969521ac142b88f828095cc8757
 
   - name: pivy
     buildsystem: simple
@@ -710,11 +710,12 @@ modules:
       - ln -s /app/freecad/bin/FreeCAD /app/bin/FreeCAD
       # The mimetype icon to be exported.
       - install -Dm644 ../src/Gui/Icons/freecad-doc.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
+      # duplicate filename containing org.freecadweb.FreeCAD with new name FLATPAK_ID, and replace corresponding content to FLATPAK_ID
+      - branding/asm3-daily/install.sh branding/asm3-daily ${FLATPAK_DEST}
     sources:
       - type: git
-        url: https://github.com/FreeCAD/FreeCAD.git
-        tag: 0.20.2
-        commit: 930dd9a76203a3260b1e6256c70c1c3cad8c5cb8
+        url: https://github.com/realthunder/FreeCAD.git
+        branch: LinkMerge
       - type: file
         path: openscad.sh
       - type: shell
@@ -723,10 +724,10 @@ modules:
           # to obtain the revcount for a given gitRef (commit hash, branch or tag) run
           # echo $(($(curl -s 'https://api.github.com/repos/FreeCAD/FreeCAD/compare/120ca87015...'"$gitRef"'' | grep "ahead_by" | sed -s 's/ //g;s/"ahead_by"://;s/,//')+1))
           - |
-            revcount=29603
-            sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
-            sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
-            sed -i 's|${PACKAGE_WCURL}|https://github.com/FreeCAD/FreeCAD.git|' src/Build/Version.h.cmake
+            # revcount=29603
+            # sed -i 's|${PACKAGE_WCREF}|'"$revcount"' (Git)|' src/Build/Version.h.cmake
+            # sed -i 's|@PACKAGE_VERSION@|@PACKAGE_VERSION@.'"$revcount"'|' src/XDGData/org.freecadweb.FreeCAD.appdata.xml.in
+            sed -i 's|${PACKAGE_WCURL}|https://github.com/realthunder/FreeCAD.git|' src/Build/Version.h.cmake
           - | # fix paths for flatpak environment
             sed -i 's|/usr|/app|g' cMake/FindOCC.cmake src/Gui/GraphvizView.cpp
             sitepackagesDir=$(python3 -c 'import sysconfig; print(sysconfig.get_paths()["platlib"])' | sed 's|/usr|/app|')
