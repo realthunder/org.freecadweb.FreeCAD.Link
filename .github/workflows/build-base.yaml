@@ -1,9 +1,9 @@
-name: Build flatpak
+name: Build BaseApp
 
 on:
   push:
     tags:
-      - "*"
+      - "*base"
 
   workflow_dispatch:
 
@@ -30,25 +30,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: realthunder/org.freecadweb.FreeCAD.Link
-          submodules: true
-
-      - name: Setup build
-        run: |
-          name=org.freecadweb.FreeCAD.Link
-          sed -i 's|branch: LinkMerge|tag: ${{github.ref_name}}|' $name.yaml
-          url=https://github.com/realthunder/$name/releases/download/BaseApp/$name
-          wget $url.BaseApp2.flatpak
-          flatpak install $name.BaseApp2.flatpak
 
       - name: Build
         id: flatpak
         uses: andyholmes/flatter@main
         with:
           files: |
-            org.freecadweb.FreeCAD.Link.yaml
+            org.freecadweb.FreeCAD.Link.BaseApp.yaml
           arch: ${{ matrix.arch }}
           upload-bundles: true
-          cache-key: FreeCAD-Link-${{ github.sha }}
+          cache-key: FreeCAD-Link-BaseApp-${{ github.sha }}
           flatpak-builder-args: |
             --install-deps-from=flathub
 
@@ -65,26 +56,7 @@ jobs:
             name=`echo ${{ needs.flatter.outputs.repository }}/*.flatpak`
             mv $name ${name%.flatpak}-$tag.flatpak
             echo "RELEASE_ASSETS=${name%.flatpak}"'*.flatpak' >> $GITHUB_ENV
-            case $tag in
-            *tip)
-                echo "RELEASE_NAME=Tip" >> $GITHUB_ENV
-                echo "IS_PRERELEASE=true" >> $GITHUB_ENV
-                branding=../conda/branding/asm3-daily
-                ;;
-            *edge)
-                echo "RELEASE_NAME=Edge" >> $GITHUB_ENV
-                echo "IS_PRERELEASE=true" >> $GITHUB_ENV
-                release=Edge
-                branding=../conda/branding/asm3-daily
-                ;;
-            *stable)
-                echo "RELEASE_NAME=$tag" >> $GITHUB_ENV
-                echo "IS_PRERELEASE=false" >> $GITHUB_ENV
-                ;;
-            *)
-                echo "Invalid tag"
-                exit 1
-            esac
+            echo "RELEASE_NAME=$tag" >> $GITHUB_ENV
 
       - name: Delete old release assets
         uses: realthunder/delete-release-assets@v1
@@ -93,7 +65,6 @@ jobs:
           fail-if-no-release: false
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.RELEASE_NAME }}
-          # repository: realthunder/FreeCAD
           assets: |
               ${{ env.RELEASE_ASSETS }}
 
@@ -103,6 +74,5 @@ jobs:
         with:
           files: ${{ env.RELEASE_ASSETS }}
           name: ${{ env.RELEASE_NAME }}
-          prerelease: ${{ env.IS_PRERELEASE }}
           tag_name: ${{ env.RELEASE_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
