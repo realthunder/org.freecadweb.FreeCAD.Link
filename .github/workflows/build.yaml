@@ -35,7 +35,7 @@ jobs:
           tag=${{ github.ref_name }}
           name=org.freecadweb.FreeCAD.Link
           sed -i 's|branch: LinkMerge|tag: ${{github.ref_name}}|' $name.yaml
-          url=https://github.com/realthunder/$name.BaseApp/releases/download/latest/$name
+          url=https://github.com/realthunder/$name.BaseApp/releases/download/20230430/$name
           if ! which wget; then yum install wget -y; fi
           wget $url.BaseApp3.flatpak
           flatpak install -y $name.BaseApp3.flatpak
