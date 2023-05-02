@@ -29,6 +29,7 @@ cleanup:
   - '*.la'
 cleanup-commands: [/app/cleanup-BaseApp.sh]
 modules:
+  - shared-modules/glu/glu-9.json
 
   - name: FreeCAD
     buildsystem: cmake-ninja
