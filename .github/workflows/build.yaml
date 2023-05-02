@@ -35,6 +35,9 @@ jobs:
           tag=${{ github.ref_name }}
           name=org.freecadweb.FreeCAD.Link
           sed -i 's|branch: LinkMerge|tag: ${{github.ref_name}}|' $name.yaml
+          if ${{ endsWith(github.ref_name, 'stable') }}; then
+            sed -i 's|asm3-daily|asm3|' $name.yaml
+          fi
           url=https://github.com/realthunder/$name.BaseApp/releases/download/20230430/$name
           if ! which wget; then yum install wget -y; fi
           wget -q $url.BaseApp3.flatpak
@@ -52,17 +55,19 @@ jobs:
           flatpak-builder-args: |
             --install-deps-from=flathub
 
-  # See "Github Pages" below
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
 
     steps:
+      - name: Download assets
+        uses: actions/download-artifact@v3
+
       - name: Prepare assets
         run: |
           set -x
-          name=org.freecadweb.FreeCAD.Link.BaseApp
+          name=org.freecadweb.FreeCAD.Link
           mv $name*/*.flatpak .
           name=`echo *.flatpak`
           echo "RELEASE_ASSETS=$name" >> $GITHUB_ENV
@@ -71,13 +76,11 @@ jobs:
           *tip)
               echo "RELEASE_NAME=Tip" >> $GITHUB_ENV
               echo "IS_PRERELEASE=true" >> $GITHUB_ENV
-              branding=../conda/branding/asm3-daily
               ;;
           *edge)
               echo "RELEASE_NAME=Edge" >> $GITHUB_ENV
               echo "IS_PRERELEASE=true" >> $GITHUB_ENV
               release=Edge
-              branding=../conda/branding/asm3-daily
               ;;
           *stable)
               echo "RELEASE_NAME=$tag" >> $GITHUB_ENV

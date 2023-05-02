@@ -57,22 +57,31 @@ modules:
             - -DSHIBOKEN_LIBRARY=shiboken2.cpython-310-aarch64-linux-gnu
             - -DPYSIDE_LIBRARY=pyside2.cpython-310-aarch64-linux-gnu
     post-install:
-      - install -Dm755 ../openscad.sh /app/bin/openscad
-      - ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
-      - mv /app/freecad/bin/FreeCAD /app/freecad/bin/FreeCADLink
-      - ln -s /app/freecad/bin/FreeCADLink /app/bin/FreeCADLink
-      - git clone https://github.com/realthunder/FreeCAD_assembly3.git /app/freecad/Mod/
-      # The mimetype icon to be exported.
-      - install -Dm644 ../src/Gui/Icons/freecad-doc.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
-      # duplicate filename containing org.freecadweb.FreeCAD with new name FLATPAK_ID, and replace corresponding content to FLATPAK_ID
-      - branding/asm3-daily/install.sh branding/asm3-daily ${FLATPAK_DEST}
+      - |
+        set -x
+        install -Dm755 ../openscad.sh /app/bin/openscad
+        ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
+        mv /app/freecad/bin/FreeCAD /app/freecad/bin/FreeCADLink
+        ln -s /app/freecad/bin/FreeCADLink /app/bin/FreeCAD
+        ls -l ..
+        ls -l .
+        if test -d ../assembly3; then cp -a ../assembly3 /app/freecad/Mod/ ; fi
+        ../branding/asm3-daily/install.sh ../branding/asm3-daily /app /app/freecad || true
+        # The mimetype icon to be exported.
+        install -Dm644 ../src/Gui/Icons/freecad-doc.svg /app/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
     sources:
       - type: git
         url: https://github.com/realthunder/FreeCAD.git
         branch: LinkMerge
         disable-submodules: true
+      - type: git
+        url: https://github.com/realthunder/FreeCAD_assembly3.git
+        dest: assembly3
       - type: file
         path: openscad.sh
+      - type: git
+        url: https://github.com/realthunder/fcad-branding.git
+        dest: branding
       - type: shell
         commands:
           # revcount needs to be updated any time the source commit or tag is changed
