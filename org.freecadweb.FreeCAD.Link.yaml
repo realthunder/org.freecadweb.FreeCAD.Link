@@ -4,7 +4,7 @@ base-version: '5.15-22.08'
 runtime: org.kde.Platform
 runtime-version: '5.15-22.08'
 sdk: org.kde.Sdk
-command: FreeCAD
+command: FreeCADLink
 finish-args:
   - --env=QT_QPA_PLATFORM=xcb
   - --share=ipc
@@ -63,9 +63,7 @@ modules:
         ln -s /app/freecad/bin/FreeCADCmd /app/bin/FreeCADCmd
         mv /app/freecad/bin/FreeCAD /app/freecad/bin/FreeCADLink
         ln -s /app/freecad/bin/FreeCADLink /app/bin/FreeCAD
-        ls -l ..
-        ls -l .
-        if test -d ../assembly3; then cp -a ../assembly3 /app/freecad/Mod/ ; fi
+        cp -a ../assembly3 /app/freecad/Mod/
         ../branding/asm3-daily/install.sh ../branding/asm3-daily /app /app/freecad || true
         # The mimetype icon to be exported.
         install -Dm644 ../src/Gui/Icons/freecad-doc.svg /app/share/icons/hicolor/scalable/mimetypes/${FLATPAK_ID}.application-x-extension-fcstd.svg
