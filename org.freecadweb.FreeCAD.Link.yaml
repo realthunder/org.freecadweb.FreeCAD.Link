@@ -18,6 +18,7 @@ finish-args:
   - --env=TMPDIR=/var/tmp
   - --env=SPNAV_SOCKET=/run/spnav.sock
   - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
+  - --env=PYTHONUSERBASE=/var/data/python
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm14
 cleanup:
