@@ -32,6 +32,16 @@ cleanup-commands: [/app/cleanup-BaseApp.sh]
 modules:
   - shared-modules/glu/glu-9.json
 
+  - name: libfmt
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: archive
+        url: https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.zip
+        md5: e6754011ff56bfc37631fcc90961e377
+
   - name: FreeCAD
     buildsystem: cmake-ninja
     builddir: true
