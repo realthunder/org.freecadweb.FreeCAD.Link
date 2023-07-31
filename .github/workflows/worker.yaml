@@ -41,6 +41,9 @@ jobs:
           if ! which wget; then yum install wget -y; fi
           wget -q $url.BaseApp3.flatpak
           flatpak install -y $name.BaseApp3.flatpak
+          rm $name.BaseApp3.flatpak
+          df -h
+          du -a / | sort -n -r | head -n 30
 
       - name: Build
         id: flatpak
@@ -50,7 +53,7 @@ jobs:
             org.freecadweb.FreeCAD.Link.yaml
           arch: ${{ inputs.arch }}
           upload-bundles: true
-          cache-key: FreeCAD-Link
+          cache-key: ''
           flatpak-builder-args: |
             --install-deps-from=flathub
 
