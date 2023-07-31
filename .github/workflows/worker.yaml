@@ -31,6 +31,7 @@ jobs:
 
       - name: Setup build
         run: |
+          df -h
           tag=${{ inputs.ref }}
           name=org.freecadweb.FreeCAD.Link
           sed -i 's|branch: LinkMerge|tag: ${{ inputs.ref }}|' $name.yaml
@@ -43,11 +44,10 @@ jobs:
           flatpak install -y $name.BaseApp3.flatpak
           rm $name.BaseApp3.flatpak
           df -h
-          du -a / | sort -n -r | head -n 30
 
       - name: Build
         id: flatpak
-        uses: andyholmes/flatter@main
+        uses: realthunder/flatter@main
         with:
           files: |
             org.freecadweb.FreeCAD.Link.yaml
