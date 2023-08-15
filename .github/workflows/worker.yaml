@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       os: 
-        default: "ubuntu-latest"
+        default: "self-hosted"
         type: string
       arch:
         default: "x86_64"
