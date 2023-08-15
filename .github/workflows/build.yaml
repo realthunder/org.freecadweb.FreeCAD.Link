@@ -11,6 +11,7 @@ jobs:
   build:
     strategy:
       matrix:
+        os: [self-hosted]
         arch: [x86_64]
       fail-fast: false
       # Only one job at a time can use the shared repository cache
@@ -19,3 +20,5 @@ jobs:
     uses: ./.github/workflows/worker.yaml
     with:
       ref: ${{ github.ref_name }}
+      os: ${{ matrix.os }}
+      arch: ${{ matrix.arch }}
