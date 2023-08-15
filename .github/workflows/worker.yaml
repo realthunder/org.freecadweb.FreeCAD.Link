@@ -31,7 +31,6 @@ jobs:
 
       - name: Setup build
         run: |
-          df -h
           tag=${{ inputs.ref }}
           name=org.freecadweb.FreeCAD.Link
           sed -i 's|branch: LinkMerge|tag: ${{ inputs.ref }}|' $name.yaml
@@ -43,7 +42,7 @@ jobs:
           wget -q $url.BaseApp3.flatpak
           flatpak install -y $name.BaseApp3.flatpak
           rm $name.BaseApp3.flatpak
-          df -h
+          git config --global --add safe.directory "*"
 
       - name: Build
         id: flatpak
