@@ -53,7 +53,7 @@ jobs:
             org.freecadweb.FreeCAD.Link.yaml
           arch: ${{ inputs.arch }}
           upload-bundles: true
-          cache-key: ''
+          cache-key: FreeCAD-Link
           flatpak-builder-args: |
             --install-deps-from=flathub
 
