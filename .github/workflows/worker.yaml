@@ -18,7 +18,7 @@ jobs:
     name: Build bundle
     runs-on: ${{ inputs.os }}
     container:
-      image: ghcr.io/andyholmes/flatter/kde:5.15-22.08
+      image: ghcr.io/realthunder/flatter/kde:5.15-22.08
       options: --privileged
 
     steps:
