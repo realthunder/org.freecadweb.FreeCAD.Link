@@ -64,13 +64,13 @@ jobs:
     steps:
       - name: Download assets
         uses: actions/download-artifact@v3
-        with:
-          name: org.freecadweb.FreeCAD.Link.flatpak
 
       - name: Prepare assets
         run: |
           set -x
           name=org.freecadweb.FreeCAD.Link
+          mv $name*/*.flatpak .
+          name=`echo *.flatpak`
           tag=${{ inputs.ref }}
           case $tag in
           *tip)
@@ -92,9 +92,8 @@ jobs:
               echo "Invalid tag"
               exit 1
           esac
-          bundle_name=${name}.${postfix}.flatpak
-          ls -l
-          mv ${name}.flatpak $bundle_name
+          bundle_name=${name%.flatpak}.${postfix}.flatpak
+          mv $name $bundle_name
           shasum -a 256 $bundle_name > $bundle_name-SHA256.txt
           echo 'RELEASE_ASSETS=*.flatpak*' >> $GITHUB_ENV
 
