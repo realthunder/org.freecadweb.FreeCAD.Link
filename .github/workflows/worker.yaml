@@ -37,7 +37,7 @@ jobs:
           if ${{ endsWith(inputs.ref, 'stable') }}; then
             sed -i 's|asm3-daily|asm3|' $name.yaml
           fi
-          url=https://github.com/realthunder/$name.BaseApp/releases/download/20230430/$name
+          url=https://github.com/realthunder/$name.BaseApp/releases/latest/download/$name
           if ! which wget; then yum install wget -y; fi
           wget -q $url.BaseApp3.flatpak
           flatpak install -y $name.BaseApp3.flatpak
